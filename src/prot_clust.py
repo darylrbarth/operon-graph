@@ -16,3 +16,10 @@ def mmseq_cluster(fasta, thresh, eval):
     subprocess.run(['rm', 'data/interim/{db_name}*'])
     subprocess.run(['rm', '-r', 'data/interim/tmp'])
     return tsv_name 
+
+def get_prot_names(tsv):
+    nodes = set()
+    with open(tsv, 'r') as f:
+        for line in f:
+            nodes.add(line.split('\t')[0])
+    return nodes

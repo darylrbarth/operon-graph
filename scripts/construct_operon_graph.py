@@ -1,1 +1,3 @@
-#Python script to call each of the scripts in the operon graph data pipeline 
+#Python script to set parameters and run graph_constructor.py
+
+
