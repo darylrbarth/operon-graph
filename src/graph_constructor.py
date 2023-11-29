@@ -1,6 +1,7 @@
 #Dis be 
 import src
 from src.prot_clust.py import mmseq_cluster, get_prot_names
+from src.prot_chain_sequence.py import EdgeConstructor
 import networkx as nx 
 
 class GraphConstructor():
@@ -18,7 +19,14 @@ class GraphConstructor():
         G.add_nodes_from(prot_node_names)
 
         #Step 2: Create Protein Chains (list of )
-        fasta_parse(prot_node_tsv)
-        #Step 3: Determine Edge Weights 
+        edge_constructor = EdgeConstructor(prot_node_tsv)
+        edge_constructor.run()
 
+        #Add edges to graph
+        G.add_edges_from(edge_constructor.weighted_edges)
+        #Save graph to class instance
+        self.G = G
         return G
+
+    def draw(self, G):
+        nx.draw(G, with_labels=True, font_weight='bold') 
