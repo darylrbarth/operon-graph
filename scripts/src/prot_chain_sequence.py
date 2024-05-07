@@ -4,8 +4,9 @@
 # {prot1:[prot76, prot985, prot1]}
 
 class EdgeConstructor():
-    def __init__(self, tsv):
+    def __init__(self, tsv, input_format):
         self.tsv = tsv
+        self.input_format = input_format
         self.member_to_cluster = {}
         self.head_to_members = {}
         self.scaffolds = set()
@@ -20,9 +21,9 @@ class EdgeConstructor():
 
     def run(self):
         self.get_nodes()
-        print(f'Number of nodes: {len(self.nodes)}')
+        print(f'Number of nodes: {len(self.nodes)}, example: {list(self.nodes)[:5]}')
         self.prot_hash()
-        print(f'Number of cluster heads: {len(self.head_to_members)}')
+        print(f'Number of cluster heads: {len(self.head_to_members)}, example: {list(self.head_to_members.keys())[:5]}')
         self.scaffold()
         print(f'Number of scaffolds: {len(self.scaffolds_to_members)}, example: {list(self.scaffolds_to_members.keys())[0]}, {list(self.scaffolds_to_members.values())[0][:5]}')
         self.ordered_scaffold_members()
@@ -49,6 +50,13 @@ class EdgeConstructor():
                 cluster_head, cluster_member = line.split('\t')
                 #Remove the \n
                 cluster_member = cluster_member[:-1]
+                if self.input_format == 'Guaymas_fasta_temp_scaffold':
+                    cluster_head = cluster_head.split('_')[:-1]
+                    cluster_head = '_'.join(cluster_head)
+                    #print(cluster_head)
+                    cluster_member = cluster_member.split('_')[:-1]
+                    cluster_member = '_'.join(cluster_member)
+                    #print(cluster_member)
                 self.member_to_cluster[cluster_member] = cluster_head
                 if cluster_head in self.head_to_members:
                     self.head_to_members[cluster_head].add(cluster_member)
@@ -61,12 +69,22 @@ class EdgeConstructor():
         members = self.member_to_cluster.keys()
         for member in members: 
             #Remove the last '_' and everything after it
+            #'Guaymas_fasta' that looks like this: D4944_C32_H1_scaffold_1932_9 or 'Guaymas_fasta_temp_scaffold' that looks like this: D4944_C32_H1_scaffold_1932_9_100 and D4944_C32_H1-scaffold_1932_9_100
+            #if self.input_format == 'Guaymas_fasta':
             scaffold = member.split('_')[:-1]
             scaffold = '_'.join(scaffold)
             member_position = member.split('_')[-1]
+            #print(f'Scaffold: {scaffold}, member_position: {member_position}')
+            #elif self.input_format == 'Guaymas_fasta_temp_scaffold':
+            #    #print(member)
+            #    scaffold = member.split('_')[:-2]
+            #    #print(scaffold)
+            #    scaffold = '_'.join(scaffold)
+            #    member_position = member.split('_')[-2]
+                #print(f'Scaffold: {scaffold}, member_position: {member_position}')
             #Drop the \n
             member_position = member_position.split('\n')[0]
-            #scaffolds.add(scaffold)
+            #Add scaffolds to members list! 
             if scaffold in self.scaffolds_to_members.keys():
                 self.scaffolds_to_members[scaffold].append(member)
                 self.positions[scaffold].append(member_position)

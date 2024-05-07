@@ -12,10 +12,10 @@ evalue = 1.000E-05
 #input string format
 input_format = 'Guaymas_fasta_temp_scaffold' #Options are 'Guaymas_fasta' that looks like this: D4944_C32_H1_scaffold_1932_9 or 'Guaymas_fasta_temp_scaffold' that looks like this: D4944_C32_H1_scaffold_1932_9_100 and D4944_C32_H1-scaffold_1932_9_100
 #fasta = '/stor/work/Marcotte/project/drbarth/plastics/reference/Guaymas_mining/Guaymas2020/05.reference/Guaymas2020_Scaffolds_Bins_deduplicated_hottest_greaterthan80C.faa'
-graph_output = '../data/test_GRAPH_Guaymas2020_hottest_clu30.gml'
+graph_output = '../data/GRAPH_ALL_Guaymas2020_hottest_clu30_May62024.gml'
 
 #Already run mmseqs2? Put in tsv here: 
-tsv = '../data/test_Guaymas2020_hottest_clu30.tsv'
+tsv = '../data/Guaymas2020_Scaffolds_Bins_deduplicated_hottest_mmseqs_clu30.tsv'
 
 #Run graph constructor
 graph_constructor = GraphConstructor(threshold, evalue, input_format)
@@ -27,6 +27,10 @@ G = graph_constructor.run_nocluster(tsv)
 #Save graph
 nx.write_gml(G, graph_output)
 
+elapsed_time = time.time() - start_time
+print(f"Time to make graph: {elapsed_time} seconds")
+print(f'Graph output here: {graph_output}')
+
 #Save graph as tsv files
 
 import networkx as nx
@@ -35,8 +39,8 @@ import networkx as nx
 G = nx.read_gml(graph_output)
 
 # Open a file to write the node data
-output_nodes_tsv = '../data/test_GRAPH_nodes.tsv'
-output_edges_tsv = '../data/test_GRAPH_edges.tsv'
+output_nodes_tsv = '../data/nodes_GRAPH_ALL_Guaymas2020_hottest_clu30_May62024.tsv'
+output_edges_tsv = '../data/edges_GRAPH_ALL_Guaymas2020_hottest_clu30_May62024.tsv'
 
 
 with open(output_nodes_tsv, 'w') as node_file:
