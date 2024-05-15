@@ -19,4 +19,5 @@ def mmseq_cluster(fasta, thresh, eval):
     #Remove the now unnecessary files and folders
     #subprocess.run(['rm', f'{db_name}*'])
     #subprocess.run(['rm', '-r', 'data/interim'])
+    print(f'Clustered {fasta} with threshold {thresh} and evalue {eval} and saved as {tsv_name}')
     return tsv_name 
