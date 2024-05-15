@@ -10,14 +10,14 @@ start_time = time.time()
 threshold = 0.5
 evalue = 1.000E-05
 #input string format
-input_format = 'Guaymas_fasta_temp_scaffold' #Options are 'Guaymas_fasta' that looks like this: D4944_C32_H1_scaffold_1932_9 or 'Guaymas_fasta_temp_scaffold' that looks like this: D4944_C32_H1_scaffold_1932_9_100 and D4944_C32_H1-scaffold_1932_9_100
+input_format = 'Guaymas_fasta' #Options are 'Guaymas_fasta' that looks like this: D4944_C32_H1_scaffold_1932_9 or 'Guaymas_fasta_temp_scaffold' that looks like this: D4944_C32_H1_scaffold_1932_9_100 and D4944_C32_H1-scaffold_1932_9_100
 operonic_distance = 10 
 #fasta = '/stor/work/Marcotte/project/drbarth/plastics/reference/Guaymas_mining/Guaymas2020/05.reference/Guaymas2020_Scaffolds_Bins_deduplicated_hottest_greaterthan80C.faa'
-graph_output = '../data/GRAPH_ALL_Guaymas2020_hottest_clu30_May62024.gml'
+graph_output = '../data/GRAPH_test_hottest_clu30_operonicdistance.gml'
 
 
 #Already run mmseqs2? Put in tsv here: 
-tsv = '../data/Guaymas2020_Scaffolds_Bins_deduplicated_hottest_mmseqs_clu30.tsv'
+tsv = '../data/test_Guaymas2020_hottest_clu30.tsv'
 
 #Run graph constructor
 graph_constructor = GraphConstructor(threshold, evalue, input_format, operonic_distance)

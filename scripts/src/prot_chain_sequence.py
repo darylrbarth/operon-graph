@@ -4,9 +4,10 @@
 # {prot1:[prot76, prot985, prot1]}
 
 class EdgeConstructor():
-    def __init__(self, tsv, input_format):
+    def __init__(self, tsv, input_format, operonic_distance):
         self.tsv = tsv
         self.input_format = input_format
+        self.operonic_distance = operonic_distance
         self.member_to_cluster = {}
         self.head_to_members = {}
         self.scaffolds = set()
@@ -111,10 +112,16 @@ class EdgeConstructor():
     def make_scaffold_pairs(self):   
         #list of tuples of scaffold pairs, ie [(prot1, prot2), (prot2, prot3), (prot3, prot4)]
         for scaffold in self.ordered_scaffolds.keys():
+            print(scaffold)
             member_list = self.ordered_scaffolds[scaffold]
-            #Make a tuple of each member and the member after it in the list
+            print(member_list)
+            #Make a tuple of each member and the member after it, if the member after has a position within operonic_distance of each other
             for i in range(len(member_list)-1):
-                self.scaffold_pairs.append((member_list[i], member_list[i+1]))
+                member_pos = member_list[i].split('_')[-1]
+                next_member_pos = member_list[i+1].split('_')[-1]
+                if int(next_member_pos) - int(member_pos) <= self.operonic_distance:
+                #print(member_list[i], member_list[i+1])
+                    self.scaffold_pairs.append((member_list[i], member_list[i+1]))
         return
 
 
