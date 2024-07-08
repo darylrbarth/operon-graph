@@ -3,6 +3,8 @@
 #Also make hash table connecting cluster heads to a list of cluster members
 # {prot1:[prot76, prot985, prot1]}
 
+from typing import List, Dict, Set
+
 class EdgeConstructor():
     def __init__(self, tsv, input_format, operonic_distance):
         self.tsv = tsv
@@ -12,11 +14,11 @@ class EdgeConstructor():
         self.head_to_members = {}
         self.scaffolds = set()
         self.scaffolds_to_members = {}
-        self.positions = {}
+        self.positions : Dict[str, List[int]] = {}
         self.ordered_scaffolds = {}
         self.scaffold_pairs = []
         self.edges = []
-        self.edge_weights = {}
+        self.edge_properties = {}
         self.weighted_edges = []
         self.nodes = set()
 
@@ -31,10 +33,13 @@ class EdgeConstructor():
         print(f'Number of ordered scaffolds: {len(self.ordered_scaffolds)}, example: {list(self.ordered_scaffolds.keys())[0]}, {list(self.ordered_scaffolds.values())[0][:5]}')
         self.make_scaffold_pairs()
         print(f'Number of scaffold pairs: {len(self.scaffold_pairs)}, example: {self.scaffold_pairs[:5]}')
+
+        # Edge construction
+        
         self.create_edges()
         print(f'Number of edges: {len(self.edges)}, example: {self.edges[:5]}')
-        self.calculate_edge_weights()
-        print(f'Number of edge weights: {len(self.edge_weights)}, example: {list(self.edge_weights.keys())[:5]}')
+        self.calculate_edge_properties()
+        print(f'Number of edge weights: {len(self.edge_properties)}, example: {list(self.edge_properties.keys())[:5]}')
         self.make_weighted_edges()
         print(f'Number of weighted edges: {len(self.weighted_edges)}, example: {self.weighted_edges[:5]}')
 
@@ -109,7 +114,7 @@ class EdgeConstructor():
         return 
 
 
-    def make_scaffold_pairs(self):   
+    def make_scaffold_pairs(self):   # TODO make this match all pairs within operonic distance
         #list of tuples of scaffold pairs, ie [(prot1, prot2), (prot2, prot3), (prot3, prot4)]
         for scaffold in self.ordered_scaffolds.keys():
             print(scaffold)
@@ -123,7 +128,27 @@ class EdgeConstructor():
                 #print(member_list[i], member_list[i+1])
                     self.scaffold_pairs.append((member_list[i], member_list[i+1]))
         return
+    
+    # def make_adjacent_scaffold_pairs(self):
+    #     """
+    #     Old function for generating scaffold pairs purely by adjacency in operon
+    #     """
+    #     #list of tuples of scaffold pairs, ie [(prot1, prot2), (prot2, prot3), (prot3, prot4)]
+    #     for scaffold in self.ordered_scaffolds.keys():
+    #         print(scaffold)
+    #         member_list = self.ordered_scaffolds[scaffold]
+    #         print(member_list)
+    #         #Make a tuple of each member and the member after it, if the member after has a position within operonic_distance of each other
+    #         for i in range(len(member_list)-1):
+    #             member_pos = member_list[i].split('_')[-1]
+    #             next_member_pos = member_list[i+1].split('_')[-1]
+    #             if int(next_member_pos) - int(member_pos) <= self.operonic_distance:
+    #             #print(member_list[i], member_list[i+1])
+    #                 self.scaffold_pairs.append((member_list[i], member_list[i+1]))
+    #     return
 
+
+    # --------------- Edge construction ----------------
 
     #Make a list of edges between cluster heads by replacing the scaffold pairs with the cluster heads
     def create_edges(self):
@@ -132,22 +157,29 @@ class EdgeConstructor():
             self.edges.append((self.member_to_cluster[pair[0]], self.member_to_cluster[pair[1]]))
         #match the scaffold pairs to the cluster heads
         return
+    
 
     #Add edge weights to the edges
-    #Syntax looks like this: (2, 3, {'weight': 3.1415})
-    def calculate_edge_weights(self):
+    #Syntax looks like this: (2, 3, {'abs_weight': 3.1415, norm_weight: 0.18235})
+    def calculate_edge_properties(self):
         for edge in self.edges:
             num_members_n1 = len(self.head_to_members[edge[0]])
             num_members_n2 = len(self.head_to_members[edge[1]])
             num_possible_connections = num_members_n1 * num_members_n2
-            if edge in self.edge_weights:
-                self.edge_weights[edge] += 1/num_possible_connections
+            if edge in self.edge_properties:
+                edge_properties = self.edge_properties[edge]
+                edge_properties['abs_weight'] += 1
+                edge_properties['norm_weight'] += 1/num_possible_connections
             else:
-                self.edge_weights[edge] = 1/num_possible_connections
+                edge_properties = {
+                    'abs_weight': 1,
+                    'norm_weight': 1/num_possible_connections,
+                }
+                self.edge_properties[edge] = edge_properties
         return 
 
 
     def make_weighted_edges(self):
-        for edge in self.edge_weights.keys():
-            self.weighted_edges.append((edge[0], edge[1], {'weight': self.edge_weights[edge]}))
+        for edge in self.edge_properties.keys():
+            self.weighted_edges.append((edge[0], edge[1], self.edge_properties[edge]))
         return 
