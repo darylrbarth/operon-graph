@@ -115,6 +115,10 @@ class EdgeConstructor():
 
 
     def make_scaffold_pairs(self):   # TODO make this match all pairs within operonic distance
+        """
+        Connect all pairs of proteins within self.operonic distance (Warning: n^2 operation)
+        Operonic distance controls the density of the graph
+        """
         #list of tuples of scaffold pairs, ie [(prot1, prot2), (prot2, prot3), (prot3, prot4)]
         for scaffold in self.ordered_scaffolds.keys():
             print(scaffold)
