@@ -1,4 +1,22 @@
 # operon-graph
+
+Given a dataset of proteins, we build an "Operon Graph" with nodes as clusters of similar proteins, and weighted edges indicating how frequently proteins from the given clusters are found colocated on operons within the dataset. This can help find operationally compatible proteins, and map our the more evolutionarily conserved operons.
+
+###
+Data extracted from each protein
+- Scaffold
+- Position on scaffold
+- Whether forward or reverse
+
+### Todos
+
+Functionality
+- Assure edge weights working, merge
+- forward and reverse strand
+- Data adapters for Ecoli, prodigal, truncated prodigal, maybe others (support multiple formats)
+- 
+
+### Example settings (scratch)
 threshold = 0.5
 evalue = 1.000E-05
 #input string format
