@@ -1,6 +1,6 @@
 #Python script to set parameters and run graph_constructor.py
 import src
-from src.graph_constructor import GraphConstructor
+from scripts.src.operon_graph import GraphConstructor
 import networkx as nx
 import matplotlib.pyplot as plt
 import time

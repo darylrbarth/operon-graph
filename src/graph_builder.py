@@ -5,7 +5,11 @@
 
 from typing import List, Dict, Set
 
-class EdgeConstructor():
+"""
+Core logic for constructing the nodes, edges, and edge weights for an OperonGraph
+"""
+
+class GraphBuilder():
     def __init__(self, tsv, input_format, operonic_distance):
         self.tsv = tsv
         self.input_format = input_format
