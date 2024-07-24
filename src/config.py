@@ -1,4 +1,5 @@
 
+import json
 from dataclasses import dataclass
 
 """
@@ -21,3 +22,9 @@ class OperonGraphConfig:
         assert self.threshold > 0, 'Threshold must be greater than 0'
         assert self.evalue > 0, 'Evalue must be greater than 0'
         assert self.operonic_distance > 0, 'Operonic distance must be greater than 0'
+    
+    @classmethod
+    def from_json(cls, json_path: str):
+        with open(json_path, 'r') as f:
+            config = json.load(f)
+        return cls(**config)

@@ -13,7 +13,7 @@ Data extracted from each protein
 Functionality
 PR 1
 - Get tests working
-- Assure edge weights working, merge
+- Assure edge weights working
 
 PR 2
 - Protein dataclass: scaffold, location, forward and reverse strand, etc.
