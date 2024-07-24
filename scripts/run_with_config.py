@@ -21,7 +21,7 @@ if __name__ == "__main__":
     config_path = sys.argv[1]
     config = OperonGraphConfig.from_json(config_path)
 
-    input_fasta = '/stor/work/Marcotte/project/drbarth/plastics/reference/Guaymas_mining/Guaymas2020/05.reference/Guaymas2020_Scaffolds_Bins_deduplicated_hottest_greaterthan80C.faa' # TODO: Choose smaller test file, possibly E. coli
+    input_fasta = './data/All_Asgards_042423.faa' # TODO: Choose smaller test file, possibly E. coli
     operon_graph = OperonGraph(config)
     G = operon_graph.run(input_fasta)
 
