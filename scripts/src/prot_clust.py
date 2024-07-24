@@ -3,7 +3,7 @@ import subprocess
 def mmseq_cluster(fasta, thresh, eval):
     #print working directory
     print(subprocess.run(['pwd']))
-    filename = fasta.split("/")[1].split(".")[0]
+    filename = fasta.split("/")[-1].split(".")[0]
     subprocess.run(['mkdir', '../data/interim/'])
     db_name = f'../data/interim/{filename}_mmseqsDB'
     subprocess.run(['mmseqs', 'createdb', fasta, db_name])

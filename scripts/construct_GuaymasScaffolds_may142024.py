@@ -12,18 +12,18 @@ evalue = 1.000E-05
 #input string format
 input_format = 'Guaymas_fasta' #Options are 'Guaymas_fasta' that looks like this: D4944_C32_H1_scaffold_1932_9 or 'Guaymas_fasta_temp_scaffold' that looks like this: D4944_C32_H1_scaffold_1932_9_100 and D4944_C32_H1-scaffold_1932_9_100
 operonic_distance = 10 
-fasta = '/stor/work/Marcotte/project/drbarth/plastics/reference/Guaymas_mining/Guaymas2020/01.prodigal_output/scaffolds_Guaymas2020/Guaymas2020_ALLSCAFFOLDS.faa' #36M proteins in this file. 
-graph_output = '../data/GRAPH_allScaffoldsGuaymas2020_clu30_operonicdistance.gml'
+#fasta = '/stor/work/Marcotte/project/drbarth/plastics/reference/Guaymas_mining/Guaymas2020/01.prodigal_output/scaffolds_Guaymas2020/Guaymas2020_ALLSCAFFOLDS.faa' #36M proteins in this file. 
+graph_output = '../data/GRAPH_allScaffoldsGuaymas2020_clu30_operonicdistance_alltoall.gml'
 
 
 #Already run mmseqs2? Put in tsv here: 
-#tsv = '../data/test_Guaymas2020_hottest_clu30.tsv'
+tsv = '../data/allScaffoldsGuaymas2020_clu30.tsv'
 
 #Run graph constructor
 graph_constructor = GraphConstructor(threshold, evalue, input_format, operonic_distance)
-G = graph_constructor.run(fasta)
+#G = graph_constructor.run(fasta)
 #If mmseqs clustering is already done: uncomment the following line
-#G = graph_constructor.run_nocluster(tsv)
+G = graph_constructor.run_nocluster(tsv)
 
 
 #Save graph

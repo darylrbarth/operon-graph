@@ -112,16 +112,18 @@ class EdgeConstructor():
     def make_scaffold_pairs(self):   
         #list of tuples of scaffold pairs, ie [(prot1, prot2), (prot2, prot3), (prot3, prot4)]
         for scaffold in self.ordered_scaffolds.keys():
-            print(scaffold)
+            #print(scaffold)
             member_list = self.ordered_scaffolds[scaffold]
-            print(member_list)
-            #Make a tuple of each member and the member after it, if the member after has a position within operonic_distance of each other
-            for i in range(len(member_list)-1):
-                member_pos = member_list[i].split('_')[-1]
-                next_member_pos = member_list[i+1].split('_')[-1]
-                if int(next_member_pos) - int(member_pos) <= self.operonic_distance:
+            #print(member_list)
+            #Make a tuple of each member and every other member on the same scaffold IF they are within operonic_distance of each other
+            length = len(member_list)
+            for index, member in enumerate(member_list):
+                pos = member.split('_')[-1]
+                for i in range(index+1, length-1):
+                    next_pos = member_list[i].split('_')[-1]
+                    if int(next_pos) - int(pos) <= self.operonic_distance:
                 #print(member_list[i], member_list[i+1])
-                    self.scaffold_pairs.append((member_list[i], member_list[i+1]))
+                        self.scaffold_pairs.append((member, member_list[i]))
         return
 
 
