@@ -118,23 +118,22 @@ class GraphBuilder():
         return 
 
 
-    def make_scaffold_pairs(self):   # TODO make this match all pairs within operonic distance
+    def make_scaffold_pairs(self):
         """
         Connect all pairs of proteins within self.operonic distance (Warning: n^2 operation)
         Operonic distance controls the density of the graph
         """
         #list of tuples of scaffold pairs, ie [(prot1, prot2), (prot2, prot3), (prot3, prot4)]
         for scaffold in self.ordered_scaffolds.keys():
-            print(scaffold)
             member_list = self.ordered_scaffolds[scaffold]
-            print(member_list)
             #Make a tuple of each member and the member after it, if the member after has a position within operonic_distance of each other
-            for i in range(len(member_list)-1):
+            for i in range(len(member_list)):
                 member_pos = member_list[i].split('_')[-1]
-                next_member_pos = member_list[i+1].split('_')[-1]
-                if int(next_member_pos) - int(member_pos) <= self.operonic_distance:
-                #print(member_list[i], member_list[i+1])
-                    self.scaffold_pairs.append((member_list[i], member_list[i+1]))
+                for j in range(i+1, len(member_list)):
+                    next_member_pos = member_list[j].split('_')[-1]
+                    if int(next_member_pos) - int(member_pos) > self.operonic_distance:
+                        break 
+                    self.scaffold_pairs.append((member_list[i], member_list[j]))
         return
     
     # def make_adjacent_scaffold_pairs(self):

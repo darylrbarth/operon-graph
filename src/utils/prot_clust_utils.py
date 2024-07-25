@@ -1,5 +1,13 @@
 
 import subprocess
+import os
+
+def get_filename_without_extension(file_path):
+    # Extract the base name (filename with extension)
+    base_name = os.path.basename(file_path)
+    # Split the base name and extension and return just the name
+    file_name_without_extension, _ = os.path.splitext(base_name)
+    return file_name_without_extension
 
 def mmseq_cluster(fasta, thresh, eval, skip_if_done=True, cleanup=False):
     """
@@ -8,7 +16,7 @@ def mmseq_cluster(fasta, thresh, eval, skip_if_done=True, cleanup=False):
 
     If skip_if_done is True, will check if the tsv file already exists and skip if it does.
     """
-    filename = fasta.split("/")[1].split(".")[0]
+    filename = get_filename_without_extension(fasta)
     db_name = f'data/interim/{filename}_mmseqsDB'
     clu_name = f'data/interim/clusters/{filename}_clu'
     tsv_name=f'data/{filename}_mmseqsDB_clu.tsv'
