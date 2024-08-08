@@ -29,7 +29,8 @@ class OperonGraph():
         return self.run_nocluster(self.prot_node_tsv)
 
     def run_nocluster(self, input_tsv: str):
-        G = nx.DiGraph()
+        #G = nx.DiGraph()
+        G = nx.Graph()
 
         #Step 2: Create Protein Chains ~ make ze edges!
         graph_builder = GraphBuilder(input_tsv, self.input_format, self.operonic_distance)
