@@ -18,8 +18,8 @@ def mmseq_cluster(fasta, thresh, eval, skip_if_done=True, cleanup=False):
     """
     filename = get_filename_without_extension(fasta)
     db_name = f'data/interim/{filename}_mmseqsDB'
-    clu_name = f'data/interim/clusters/{filename}_clu'
-    tsv_name=f'data/{filename}_mmseqsDB_clu.tsv'
+    clu_name = f'data/interim/clusters/{filename}_{thresh}clu'
+    tsv_name=f'data/{filename}_mmseqsDB_{thresh}clu.tsv'
     print(subprocess.run(['pwd']))
 
     #Check if the tsv file already exists

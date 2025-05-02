@@ -118,7 +118,7 @@ class GraphBuilder():
         return 
 
 
-    def make_scaffold_pairs(self):
+    def make_scaffold_pairs(self): #NOTE: think there is something funky with the above ordered_scaffolds and this function -- find the BUG!
         """
         Connect all pairs of proteins within self.operonic distance (Warning: n^2 operation)
         Operonic distance controls the density of the graph
