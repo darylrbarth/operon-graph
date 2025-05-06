@@ -190,3 +190,100 @@ class GraphBuilder():
         for edge in self.edge_properties.keys():
             self.weighted_edges.append((edge[0], edge[1], self.edge_properties[edge]))
         return 
+
+
+
+# --------------------- changing around the logic attempt May 5, 2025 ------------------------ #
+import networkx as nx
+import re
+
+def parse_prodigal_header_NODEstyle(header):
+    """
+    Extracts contig, start, end, strand from Prodigal FASTA header
+    Returns: (orf_id, contig, start, end, strand)
+    THIS IS NOT GENERALIZED!!! -- if we take out contig -- or just make sure to pop off the last underscore which is the protein, then it is!
+    Since we just care about intranode instead of internode. 
+    Prodigal header from superworms:
+    >NODE_1_length_151296_cov_8.025046_1 # 1 # 726 # -1 # ID=1_1;partial=10;start_type=ATG;rbs_motif=AGGAG;rbs_spacer=5-10bp;gc_cont=0.472
+    Prodigal header from Asgards:
+    >D4991_C11_H1_Bin_100_scaffold_1103_1 # 3 # 1181 # 1 # ID=1_1;partial=10;start_type=Edge;rbs_motif=None;rbs_spacer=None;gc_cont=0.397
+    We'll have to have a general way -- maybe they input the position of the scaffold number? 
+    """
+    parts = header.split()
+    #print(parts)
+    orf_id = parts[0].replace(">", "")
+    contig = orf_id.split("_").join[:-1]  # e.g. NODE_1
+    #print(contig)
+    start, end = int(parts[2]), int(parts[4])
+    #print(start, end)
+    strand = int(parts[6]) #'+' if start < end else '-'
+    #print(strand)
+    return orf_id, contig, min(start, end), max(start, end), strand
+    #Example output now: ('NODE_1_length_151296_cov_8.025046_1', '1', 1, 726, -1)
+
+def build_graph_from_fasta(fasta_lines, orthogroup_dict=None, max_distance=50):
+    """
+    fasta_lines: list of FASTA header lines from Prodigal output
+    orthogroup_dict: optional dict mapping orf_id -> orthogroup
+    """
+    orfs = []
+    for line in fasta_lines:
+        if line.startswith('>'):
+            orfs.append(parse_prodigal_header(line))
+
+    # Sort ORFs by contig and start position
+    orfs.sort(key=lambda x: (x[1], x[2]))
+
+    G = nx.Graph()
+
+    for i, (orf_id, contig, start, end, strand) in enumerate(orfs):
+        attrs = {
+            'contig': contig,
+            'start': start,
+            'end': end,
+            'strand': strand,
+        }
+        if orthogroup_dict:
+            attrs['orthogroup'] = orthogroup_dict.get(orf_id, None)
+        G.add_node(orf_id, **attrs)
+
+        # Check neighbor ORFs for adjacency
+        for j in range(i+1, len(orfs)):
+            orf2_id, contig2, start2, end2, strand2 = orfs[j]
+            if contig2 != contig:
+                break  # only compare within the same contig
+            if strand2 != strand:
+                continue
+            if start2 - end > max_distance:
+                break  # not within neighbor distance
+            G.add_edge(orf_id, orf2_id)
+
+    return G
+
+
+
+# EXAMPLE USAGE OF ABOVE NEW CODE
+# Load FASTA headers from a .faa file
+with open("your_prodigal_output.faa") as f:
+    fasta_lines = [line.strip() for line in f if line.startswith(">")]
+
+# Optional: load orthogroup mapping (e.g., from MMseqs2 clustering output)
+orthogroup_dict = {
+    "NODE_1_1": "OG0001",
+    "NODE_1_2": "OG0002",
+    # ...
+}
+
+G = build_graph_from_fasta(fasta_lines, orthogroup_dict)
+
+# Collapse to orthogroup-level operons
+components = nx.connected_components(G)
+operons = []
+for comp in components:
+    ogs = set(G.nodes[n]['orthogroup'] for n in comp if 'orthogroup' in G.nodes[n])
+    if ogs:
+        operons.append(ogs)
+
+print("Collapsed orthogroup operons:")
+for o in operons:
+    print(sorted(o))
